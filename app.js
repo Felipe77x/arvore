@@ -1,20 +1,16 @@
-import { Router } from "express";
-import volunteers from "../data/volunteers.json" assert { type: "json" };
+import express from "express";
+import { florestaRouter } from "./src/routes/routes.js";
+import { deforestationRouter } from "./src/routes/desmatacao-router.js";
+import { pollutionRouter } from "./src/routes/poluicao-router.js";
 
-export const volunteersRouter = Router();
+const app = express();
 
-// Rota para obter a lista de todos os voluntários de plantação
-volunteersRouter.get("/", (req, res) => {
-  res.json(volunteers);
-});
+app.use(express.json());
+app.use('/floresta', florestaRouter);  //--> book/all
+app.use('/desmatacao', deforestationRouter);
+app.use('/pollution', pollutionRouter);
 
-// Rota para obter informações de um voluntário específico por ID
-volunteersRouter.get("/:id", (req, res) => {
-  const volunteerId = parseInt(req.params.id);
-  const volunteer = volunteers.find(v => v.id === volunteerId);
-  if (volunteer) {
-    res.json(volunteer);
-  } else {
-    res.status(404).json({ message: "Voluntário não encontrado" });
-  }
+const PORT = 3001;
+app.listen(PORT, () => {
+    console.log(`Nosso app está rodando na porta: http://localhost:${PORT}`);
 });
